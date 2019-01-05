@@ -17,7 +17,8 @@ public:
         while (!ltq.empty() && !rtq.empty()) {
             tmpl = ltq.front(), tmpr = rtq.front();
             if (!tmpl && !tmpr) {ltq.pop(), rtq.pop(); continue;}
-            if (!tmpl && tmpr || tmpl && !tmpr) return false;
+            // if (!tmpl && tmpr || tmpl && !tmpr) return false;
+            if (!tmpl || !tmpr) return false;	//situation of both empty has already been kicked
             if (tmpl->val != tmpr->val) {ltq.pop(); break;} //to make size different
             
             //应当注意到，对称树两个子树的层次遍历序列的关系：
@@ -32,5 +33,19 @@ public:
         }
         if (ltq.size() == rtq.size()) return true;
         return false;
+    }
+};
+
+//recursive version
+class Solution {
+    bool isMirror(TreeNode *l, TreeNode *r) {
+        if (!l && !r) return true;
+        if (!l || !r) return false;
+        if (l->val != r->val) return false;
+        return isMirror(l->left, r->right) && isMirror(l->right, r->left);
+    }
+public:
+    bool isSymmetric(TreeNode* root) {
+        return isMirror(root, root);
     }
 };
