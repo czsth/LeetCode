@@ -33,3 +33,34 @@ public:
         return rtn;
     }
 };
+
+//another version by someone else
+class Solution {
+public:
+    vector<vector<int>> levelOrderBottom(TreeNode* root) {
+        vector<vector<int>> res;
+        if(!root) return res;
+        queue<TreeNode*> q;
+        vector<int> v;
+        TreeNode* p = NULL;
+        q.push(root);
+        q.push(NULL);
+        while(!q.empty()){ 
+            p = q.front();q.pop();
+            if(p){
+                v.push_back(p->val);
+                if(p->left) q.push(p->left);
+                if(p->right) q.push(p->right);
+            }
+            else {
+                //use NULL as a flag, together with size of queue
+                //to figure out when the level ends
+                if(q.size() > 0) q.push(NULL);
+                res.push_back(v);
+                v.resize(0);
+            }
+        }
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};
