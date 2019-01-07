@@ -16,3 +16,17 @@ public:
         return n;
     }
 };
+
+//小技巧：每次直接去掉最后一个1
+class Solution {
+public:
+	int hammingWeight(uint32_t n) {
+        int ans=0;
+        while(n)
+        {
+            ans++;
+            n&=n-1;
+        }
+        return ans;
+    }
+};
