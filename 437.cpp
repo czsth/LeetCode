@@ -31,13 +31,36 @@ public:
     }
 };
 
+// 记忆搜索，主要思想：记录深度搜索时——从根节点往下的累积和（记为当前和cur），并每次将cur出现次数+1。
+
+// （stl map key如果不存在会自动初始化为0）。
+// 下次使用m[cur-sum]如果为一个非0值，则说明从当前节点往上追溯（不一定追溯到根节点）可能存在一个或多个符合的路径。
+
+// （比如，假设目标和为8，假设当前节点为x，假设有路径4->4和4->4->1->-1->x则都符合）。
+class Solution {
+public:
+	int pathSum(TreeNode* root, int sum) {
+	    unordered_map<int, int> m;//memory
+	    m[0] = 1;//cur - sum = 0, return 1
+	    return dfs(root, sum, 0, m);
+	}
+	int dfs(TreeNode* node, int sum, int cur, unordered_map<int, int>& m) {
+	    if (!node) return 0;
+	    cur += node->val;	//curr是从根节点到当前节点的路径长度和
+	    int ans = m[cur - sum];
+	    ++m[cur];
+	    ans += dfs(node->left, sum, cur, m) + dfs(node->right, sum, cur, m);
+	    --m[cur];
+	    return ans;
+	}
+};
+
+//同样思想的另一种写法，区别在于下面这种使用引用来修改答案值
 class Solution {
 public:
     int pathSum(TreeNode* root, int sum) {
         
-        if (root == nullptr)
-            return 0;
-
+        if (root == nullptr) return 0;
         int res = 0;
 
         unordered_map<int, int> freq;
@@ -48,7 +71,6 @@ public:
         return res;
     }
 
-//8 ms，一个记忆化的方法
 private:
     void dfs(TreeNode* node, 
              int pathSum, 
@@ -57,16 +79,11 @@ private:
              int sum)
     {
         pathSum += node->val;
-
         res += freq[pathSum - sum];
 
         ++freq[pathSum];
-
-        if (node->left)
-            dfs(node->left, pathSum, freq, res, sum);
-        if (node->right)
-            dfs(node->right, pathSum, freq, res, sum);
-
+        if (node->left) dfs(node->left, pathSum, freq, res, sum);
+        if (node->right) dfs(node->right, pathSum, freq, res, sum);
         --freq[pathSum];
     }
 };
