@@ -1,0 +1,20 @@
+class Solution {
+//有点贪心算法的味道
+public:
+    int findContentChildren(vector<int>& g, vector<int>& s) {
+        sort(g.begin(), g.end());
+        sort(s.begin(), s.end());
+        int i = 0, j = 0;
+        int satChild = 0;
+        while (i < g.size() && j < s.size()) {
+            if (g[i] <= s[j]) {
+                ++i, ++j;
+                ++satChild;
+            }
+            else {
+                ++j;
+            }
+        }
+        return satChild;
+    }
+};
